@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+# Create nfs-sync system user/group on first install.
+if [ "$1" = "configure" ]; then
+    if ! getent group nfs-sync >/dev/null; then
+        addgroup --system nfs-sync
+    fi
+    if ! getent passwd nfs-sync >/dev/null; then
+        adduser --system --ingroup nfs-sync --no-create-home \
+                --home /nonexistent --shell /usr/sbin/nologin \
+                --gecos "nfs-sync service" nfs-sync
+    fi
+    # Take ownership of the log dir (the package ships it with 0750 root:root).
+    if [ -d /var/log/nfs-sync ]; then
+        chown nfs-sync:nfs-sync /var/log/nfs-sync
+    fi
+fi
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Stop and unregister the service on uninstall.
+rc-service nfs-sync stop 2>/dev/null || true
+rc-update del nfs-sync default 2>/dev/null || true
+exit 0

@@ -1,0 +1,42 @@
+#!/sbin/openrc-run
+# OpenRC init script for nfs-sync.
+#
+# This service is one-shot by design — it runs nfs-sync once and exits.
+# To trigger periodically use crond (the package ships an /etc/periodic/15min
+# entry). The init script exists so admins can:
+#   rc-service nfs-sync start      # ad-hoc one-shot run
+#   rc-service nfs-sync status     # check last exit
+
+name="nfs-sync"
+description="NFS → Azure Blob reconcile sync (one-shot)"
+
+command="/usr/bin/nfs-sync"
+command_user="nfs-sync:nfs-sync"
+command_background="no"
+
+# Reads /etc/default/nfs-sync at runtime; OpenRC's standard env file is
+# /etc/conf.d/nfs-sync — we source the former from there.
+extra_started_commands="run"
+
+depend() {
+    need net
+    after firewall
+}
+
+run() {
+    ebegin "Running nfs-sync"
+    su -s /bin/sh "$command_user" -c "$command"
+    eend $?
+}
+
+start_pre() {
+    # Source the same env file the systemd version uses, so the two
+    # deployments are configuration-compatible.
+    if [ -r /etc/default/nfs-sync ]; then
+        # shellcheck disable=SC1091
+        . /etc/default/nfs-sync
+        export SRC DST RCLONE_CONFIG LOG_DIR LOCK_FILE \
+               TRANSFERS CHECKERS MIN_AGE MOUNT_CHECK_FILE \
+               EXCLUDE_PATTERNS BWLIMIT
+    fi
+}

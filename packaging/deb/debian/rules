@@ -1,0 +1,25 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+%:
+	dh $@
+
+# No build/configure; install only.
+override_dh_auto_build:
+override_dh_auto_configure:
+override_dh_auto_test:
+
+override_dh_auto_install:
+	# Binaries
+	install -D -m 0755 nfs-sync.sh   debian/nfs-sync/usr/bin/nfs-sync
+	install -D -m 0755 sync-bench.sh debian/nfs-sync/usr/bin/nfs-sync-bench
+	# Config: rclone.conf is sensitive — 0600. dh_fixperms would otherwise reset.
+	install -D -m 0600 rclone.conf       debian/nfs-sync/etc/rclone/rclone.conf
+	install -D -m 0644 nfs-sync.defaults debian/nfs-sync/etc/default/nfs-sync
+	# Log dir
+	install -d -m 0750                   debian/nfs-sync/var/log/nfs-sync
+
+# Keep the 0600 mode on rclone.conf through dh_fixperms.
+override_dh_fixperms:
+	dh_fixperms --exclude etc/rclone/rclone.conf

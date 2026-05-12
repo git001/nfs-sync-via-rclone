@@ -1,0 +1,16 @@
+[Unit]
+Description=Trigger NFS sync periodically
+Documentation=https://www.freedesktop.org/software/systemd/man/systemd.timer.html
+
+[Timer]
+# Run 2 minutes after boot, then every 1 minute (gap-based).
+# Tune to your SLA budget: lower = lower latency, higher NFS load.
+# Use OnUnitInactiveSec (not OnCalendar) so the *gap* between runs is fixed,
+# regardless of how long the previous run took. Critical at 1M+ files.
+OnBootSec=2min
+OnUnitInactiveSec=1min
+AccuracySec=10s
+Unit=nfs-sync.service
+
+[Install]
+WantedBy=timers.target

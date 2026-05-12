@@ -1,0 +1,11 @@
+[Unit]
+Description=Trigger NFS sync periodically
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=5min
+AccuracySec=10s
+Unit=nfs-sync.service
+
+[Install]
+WantedBy=timers.target

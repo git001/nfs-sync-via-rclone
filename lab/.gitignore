@@ -1,0 +1,2 @@
+# Ephemeral Azurite data if run with --volume
+azurite-data/

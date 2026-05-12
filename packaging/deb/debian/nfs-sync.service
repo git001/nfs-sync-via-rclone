@@ -1,0 +1,35 @@
+[Unit]
+Description=NFS → Azure Blob reconcile sync
+Documentation=https://rclone.org/azureblob/
+After=network-online.target remote-fs.target
+Wants=network-online.target remote-fs.target
+RequiresMountsFor=/mnt/nfs/source
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/default/nfs-sync
+ExecStart=/usr/bin/nfs-sync
+SuccessExitStatus=0 2
+
+MemoryMax=8G
+CPUWeight=80
+IOWeight=80
+
+User=nfs-sync
+Group=nfs-sync
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+ReadOnlyPaths=/mnt/nfs/source
+ReadWritePaths=/var/log/nfs-sync /var/run
+
+[Install]
+WantedBy=multi-user.target

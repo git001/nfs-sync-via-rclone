@@ -1,0 +1,6 @@
+nfs-sync (1.0.0-1) unstable; urgency=medium
+
+  * Initial release: nfs-sync.sh, sync-bench.sh, systemd units,
+    configuration templates.
+
+ -- Build Bot <noreply@example.invalid>  Tue, 12 May 2026 12:00:00 +0000

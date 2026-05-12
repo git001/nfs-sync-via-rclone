@@ -1,0 +1,8 @@
+# OpenRC conf.d for nfs-sync.
+#
+# This file is sourced by /etc/init.d/nfs-sync. The actual tuning lives
+# in /etc/default/nfs-sync (shared with the systemd build), which the
+# init script will source.
+#
+# Override the env-file location here if you keep configs elsewhere:
+# NFS_SYNC_ENV_FILE="/etc/default/nfs-sync"

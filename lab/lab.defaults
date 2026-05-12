@@ -1,0 +1,13 @@
+# Lab environment overrides for nfs-sync.sh.
+# Sourced by lab.sh before invoking nfs-sync.sh — do not source directly.
+
+SRC=/tmp/nfs-lab/mount
+DST=lab-azure:lab-content
+RCLONE_CONFIG=/datadisk/git-repos/nfs-sync-via-rclone/lab/lab.rclone.conf
+LOG_DIR=/tmp/nfs-lab/logs
+LOCK_FILE=/tmp/nfs-lab/nfs-sync.lock
+TRANSFERS=4
+CHECKERS=4
+MIN_AGE=5s
+MOUNT_CHECK_FILE=.lab-sentinel
+EXCLUDE_PATTERNS=*.tmp,*.swp,.~lock*,*.partial,.git/**,*.crdownload,.lab-sentinel

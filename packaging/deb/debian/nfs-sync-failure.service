@@ -1,0 +1,7 @@
+[Unit]
+Description=Alert on nfs-sync failure
+After=nfs-sync.service
+
+[Service]
+Type=oneshot
+ExecStart=logger -t nfs-sync -p daemon.err "sync FAILED — check: journalctl -u nfs-sync.service"

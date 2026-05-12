@@ -1,0 +1,21 @@
+#!/bin/sh
+# Take ownership of the log dir.
+chown nfs-sync:nfs-sync /var/log/nfs-sync 2>/dev/null || true
+chmod 0750 /var/log/nfs-sync 2>/dev/null || true
+
+cat <<EOF
+
+nfs-sync installed. Next steps:
+
+  1. Edit /etc/rclone/rclone.conf      — set Azure auth + storage account
+  2. Edit /etc/default/nfs-sync        — set SRC, DST, tuning
+  3. Benchmark BEFORE enabling:
+       su nfs-sync -s /bin/sh -c nfs-sync-bench
+  4. Enable via OpenRC (one-shot service):
+       rc-update add nfs-sync default       # NOT periodic by itself
+  5. Periodic trigger: ensure crond runs:
+       rc-update add crond default && rc-service crond start
+     The package installed /etc/periodic/15min/nfs-sync to fire every 15 min.
+
+EOF
+exit 0

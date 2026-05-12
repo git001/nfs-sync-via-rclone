@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+
+# Only remove user on purge — keep on plain remove, so the user can
+# reinstall later and find their logs/state intact.
+if [ "$1" = "purge" ]; then
+    if getent passwd nfs-sync >/dev/null; then
+        deluser --system nfs-sync || true
+    fi
+    if getent group nfs-sync >/dev/null; then
+        delgroup --system nfs-sync || true
+    fi
+    rm -rf /var/log/nfs-sync
+fi
+
+#DEBHELPER#
+
+exit 0

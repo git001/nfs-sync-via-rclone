@@ -1,0 +1,105 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+
+  # ── RPM ──────────────────────────────────────────────────────────────────
+  build-rpm:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: el8
+            image: rockylinux:8
+          - distro: el9
+            image: rockylinux:9
+          - distro: el10
+            image: rockylinux:10
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build deps
+        run: dnf install -y make rpm-build
+
+      - name: Build RPM
+        run: make -C packaging/rpm rpm
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rpm-${{ matrix.distro }}
+          path: packaging/rpm/_build/RPMS/noarch/*.rpm
+
+  # ── DEB ──────────────────────────────────────────────────────────────────
+  build-deb:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: debian12
+            image: debian:bookworm
+          - distro: debian13
+            image: debian:trixie
+          - distro: ubuntu22
+            image: ubuntu:22.04
+          - distro: ubuntu24
+            image: ubuntu:24.04
+          - distro: ubuntu26
+            image: ubuntu:26.04
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build deps
+        run: |
+          apt-get update -q
+          apt-get install -y --no-install-recommends \
+            dpkg-dev debhelper fakeroot
+
+      - name: Build DEB
+        run: make -C packaging/deb deb
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deb-${{ matrix.distro }}
+          path: packaging/deb/_build/*.deb
+
+  # ── GitHub Release ────────────────────────────────────────────────────────
+  release:
+    needs: [build-rpm, build-deb]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v3
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --latest --strip all
+
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: dist/
+
+      - name: List artifacts
+        run: ls -lh dist/
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**
+          body: ${{ steps.git-cliff.outputs.content }}

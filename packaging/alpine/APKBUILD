@@ -1,0 +1,51 @@
+# Maintainer: Build Bot <noreply@example.invalid>
+pkgname=nfs-sync
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Periodic NFS → Azure Blob sync via rclone"
+url="https://example.invalid/nfs-sync"
+arch="noarch"
+license="Apache-2.0"
+# Bash is required (the wrapper uses bash-isms like EPOCHREALTIME).
+depends="rclone>=1.58 bash util-linux coreutils"
+# OpenRC + crond come from base-system; explicit for clarity.
+depends="$depends openrc"
+makedepends=""
+install="$pkgname.pre-install $pkgname.post-install $pkgname.pre-deinstall"
+subpackages=""
+# Source files: we expect the *-source.tar.gz to be built by a helper.
+# For local builds, see make-source-tarball.sh in this directory.
+source="
+    nfs-sync.sh
+    sync-bench.sh
+    nfs-sync.defaults
+    nfs-sync.logrotate
+    rclone.conf
+    nfs-sync.initd
+    nfs-sync.confd
+    nfs-sync.crontab
+"
+builddir="$srcdir"
+options="!check"  # No test suite.
+
+package() {
+    install -D -m 0755 "$srcdir"/nfs-sync.sh       "$pkgdir"/usr/bin/nfs-sync
+    install -D -m 0755 "$srcdir"/sync-bench.sh     "$pkgdir"/usr/bin/nfs-sync-bench
+
+    install -D -m 0600 "$srcdir"/rclone.conf       "$pkgdir"/etc/rclone/rclone.conf
+    install -D -m 0644 "$srcdir"/nfs-sync.defaults "$pkgdir"/etc/default/nfs-sync
+
+    install -D -m 0755 "$srcdir"/nfs-sync.initd    "$pkgdir"/etc/init.d/nfs-sync
+    install -D -m 0644 "$srcdir"/nfs-sync.confd    "$pkgdir"/etc/conf.d/nfs-sync
+
+    # Periodic trigger via busybox crond. Drop into /etc/periodic/15min/
+    # by default; user can move to 5min if desired.
+    install -D -m 0755 "$srcdir"/nfs-sync.crontab  "$pkgdir"/etc/periodic/15min/nfs-sync
+
+    install -D -m 0644 "$srcdir"/nfs-sync.logrotate "$pkgdir"/etc/logrotate.d/nfs-sync
+
+    install -d -m 0750 "$pkgdir"/var/log/nfs-sync
+}
+
+# Note: no checksums shown — `abuild checksum` will populate them when you
+# build locally. Adding placeholder shas would only mislead.

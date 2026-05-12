@@ -1,0 +1,31 @@
+Source: nfs-sync
+Section: admin
+Priority: optional
+Maintainer: Build Bot <noreply@example.invalid>
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-installsystemd
+Standards-Version: 4.7.0
+Homepage: https://example.invalid/nfs-sync
+Rules-Requires-Root: no
+
+Package: nfs-sync
+Architecture: all
+Depends:
+ ${misc:Depends},
+ rclone (>= 1.58),
+ bash (>= 4.4),
+ util-linux,
+ coreutils,
+ systemd-sysv | systemd
+Description: Periodic NFS to Azure Blob sync via rclone
+ Hardened, idempotent one-shot sync from an NFS mount to an Azure Blob
+ container using rclone. Ships systemd .service and .timer units, a
+ benchmark helper, and a sample rclone configuration.
+ .
+ Designed for high-volume NFS workloads on the order of 1M+ files. The
+ periodic timer runs as a dedicated system user (nfs-sync), with
+ flock-based overlap protection and quiescence filtering to avoid
+ uploading files that are still being written.
+ .
+ Run nfs-sync-bench(1) to assess feasibility before enabling the timer.

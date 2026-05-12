@@ -1,0 +1,34 @@
+# /etc/default/nfs-sync
+# Override defaults from /usr/local/bin/nfs-sync.sh
+#
+# Copy to /etc/default/nfs-sync and edit.
+
+# Source NFS mount and destination container.
+SRC=/mnt/nfs/source
+DST=azureblob:content
+
+# Sentinel file inside SRC to confirm mount isn't silently empty (stale handle).
+# Create a never-deleted marker file in the share, e.g. ".mount-ok".
+MOUNT_CHECK_FILE=.mount-ok
+
+# Parallelism. Start here; tune empirically (see sync-bench.sh).
+TRANSFERS=32
+CHECKERS=32
+
+# Quiescence window. Files touched within MIN_AGE are skipped this run
+# (anti-tear: avoids uploading a file being actively written).
+# Increase if the writer does multi-second multi-write saves.
+MIN_AGE=30s
+
+# Glob patterns to exclude (comma-separated, rclone --filter syntax).
+EXCLUDE_PATTERNS=*.tmp,*.swp,.~lock*,*.partial,*.crdownload,.DS_Store,Thumbs.db
+
+# Bandwidth cap, empty = unlimited. Format: 100M, 1G, etc.
+# Use this if the NFS server or uplink shares capacity with other workloads.
+BWLIMIT=
+
+# rclone.conf location (kept root-readable only).
+RCLONE_CONFIG=/etc/rclone/rclone.conf
+
+# Log dir.
+LOG_DIR=/var/log/nfs-sync

@@ -1,0 +1,6 @@
+#!/bin/sh
+# Create nfs-sync system user/group before files land.
+addgroup -S nfs-sync 2>/dev/null || true
+adduser -S -D -H -h /var/lib/nfs-sync -s /sbin/nologin \
+        -G nfs-sync -g "nfs-sync service" nfs-sync 2>/dev/null || true
+exit 0
