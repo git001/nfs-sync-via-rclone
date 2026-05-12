@@ -9,7 +9,7 @@
 #   --clean   Remove _build/ directories after each successful build
 #
 # Targets:
-#   rpm-el8       quay.io/centos/centos:stream8
+#   rpm-el8       rockylinux:8
 #   rpm-el9       quay.io/centos/centos:stream9
 #   rpm-el10      quay.io/centos/centos:stream10
 #   deb-debian12  debian:bookworm
@@ -61,8 +61,8 @@ run_deb() {
 
 build_target() {
     case "$1" in
-        rpm-el8)      run_rpm rpm-el8  quay.io/centos/centos:stream8  ;;
-        rpm-el9)      run_rpm rpm-el9  quay.io/centos/centos:stream9  ;;
+        rpm-el8)      run_rpm rpm-el8  rockylinux:8                   ;;
+        rpm-el9)      run_rpm rpm-el9  quay.io/centos/centos:stream9   ;;
         rpm-el10)     run_rpm rpm-el10 quay.io/centos/centos:stream10 ;;
         deb-debian12) run_deb deb-debian12 debian:bookworm ;;
         deb-debian13) run_deb deb-debian13 debian:trixie  ;;

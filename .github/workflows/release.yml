@@ -17,7 +17,7 @@ jobs:
       matrix:
         include:
           - distro: el8
-            image: quay.io/centos/centos:stream8
+            image: rockylinux:8
           - distro: el9
             image: quay.io/centos/centos:stream9
           - distro: el10
