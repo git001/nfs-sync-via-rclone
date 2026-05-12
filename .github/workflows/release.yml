@@ -17,12 +17,11 @@ jobs:
       matrix:
         include:
           - distro: el8
-            image: rockylinux:8
+            image: quay.io/centos/centos:stream8
           - distro: el9
-            image: rockylinux:9
-          # el10: rockylinux:10 not yet available on Docker Hub — re-enable once image is published
-          # - distro: el10
-          #   image: rockylinux:10
+            image: quay.io/centos/centos:stream9
+          - distro: el10
+            image: quay.io/centos/centos:stream10
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
@@ -86,7 +85,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate release notes
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
         id: git-cliff
         with:
           config: cliff.toml
