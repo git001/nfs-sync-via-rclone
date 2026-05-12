@@ -66,7 +66,7 @@ jobs:
         run: |
           apt-get update -q
           apt-get install -y --no-install-recommends \
-            build-essential dpkg-dev debhelper fakeroot dh-installsystemd
+            build-essential dpkg-dev debhelper fakeroot
 
       - name: Build DEB
         run: make -C packaging/deb deb

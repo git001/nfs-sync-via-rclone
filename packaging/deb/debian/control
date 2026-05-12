@@ -3,8 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Build Bot <noreply@example.invalid>
 Build-Depends:
- debhelper-compat (= 13),
- dh-sequence-installsystemd
+ debhelper-compat (= 13)
 Standards-Version: 4.7.0
 Homepage: https://example.invalid/nfs-sync
 Rules-Requires-Root: no
