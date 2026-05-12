@@ -20,8 +20,9 @@ jobs:
             image: rockylinux:8
           - distro: el9
             image: rockylinux:9
-          - distro: el10
-            image: rockylinux:10
+          # el10: rockylinux:10 not yet available on Docker Hub — re-enable once image is published
+          # - distro: el10
+          #   image: rockylinux:10
     runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}

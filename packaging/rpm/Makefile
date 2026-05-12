@@ -9,7 +9,7 @@
 #   make clean
 
 NAME    := nfs-sync
-VERSION := 0.1.0
+VERSION := 1.0.0
 TOPDIR  := $(CURDIR)/_build
 SRCDIR  := $(CURDIR)/../../rclone
 TARBALL := $(TOPDIR)/SOURCES/$(NAME)-$(VERSION).tar.gz

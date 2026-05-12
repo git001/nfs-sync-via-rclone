@@ -10,7 +10,7 @@
 #   make clean
 
 NAME    := nfs-sync
-VERSION := 0.1.0
+VERSION := 1.0.0
 SRCDIR  := $(CURDIR)/../../rclone
 WORKDIR := $(CURDIR)/_build
 
